@@ -38,8 +38,19 @@ enum CPUStates {
   kSoftIRQ_,
   kSteal_,
   kGuest_,
-  kGuestNice_
+  kGuestNice_,
+  kCpuStates_
 };
+
+enum MemoryTypes {
+  kMemTotal_ = 0,
+  kMemFree_,
+  kMemAvailable_,
+  kBuffers_,
+  kCached_,
+  kMemTypes_
+};
+
 std::vector<std::string> CpuUtilization();
 long Jiffies();
 long ActiveJiffies();
