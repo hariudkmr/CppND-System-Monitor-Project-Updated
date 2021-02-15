@@ -18,6 +18,7 @@ class Process {
 
   Process(int pid);
   void findUserName();
+  void findCommand();
   void calculateCpuUtilization();
   void calculateRamSize();
   void calculateUpTime();
@@ -30,7 +31,7 @@ class Process {
   std::string ram_{};
   long int uptime_{0};
   std::string command_{};
-  enum ePidStat { utime_ = 14, stime_, cutime_, cstime_, starttime_ = 22 };
+  
 };
 
 #endif

@@ -119,7 +119,25 @@ long LinuxParser::Jiffies() {
 
 // TODO: Read and return the number of active jiffies for a PID
 // REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid [[maybe_unused]]) { return 0; }
+long LinuxParser::ActiveJiffies(int pid) {
+  string line, cpuname;
+  long result{0};
+  long cpu_data[CPUStates::kCpuStates_]{0};
+  std::ifstream filestream(kProcDirectory + "/" + std::to_string(pid) +
+                           kStatFilename);
+  if (filestream.is_open()) {
+    std::getline(filestream, line);
+    std::istringstream linestream(line);
+    linestream >> cpuname;  // pop first string
+    for (int i = 0; i < CPUStates::kCpuStates_; i++) {
+      linestream >> cpu_data[i];
+    }
+  }
+  result = cpu_data[CPUStates::kUser_] + cpu_data[CPUStates::kNice_] +
+           cpu_data[CPUStates::kSystem_] + cpu_data[CPUStates::kIRQ_] +
+           cpu_data[CPUStates::kSoftIRQ_] + cpu_data[CPUStates::kSteal_];
+  return result;
+}
 
 // TODO: Read and return the number of active jiffies for the system
 long LinuxParser::ActiveJiffies() {
@@ -238,7 +256,7 @@ string LinuxParser::Ram(int pid) {
       std::istringstream linestream(line);
       while (linestream >> name >> result) {
         if (name == "VmSize") {
-          break;
+          return result;
         }
       }
     }
@@ -261,7 +279,7 @@ std::string LinuxParser::Uid(int pid) {
       std::istringstream linestream(line);
       while (linestream >> key >> result) {
         if (key == "Uid") {
-          break;
+          return result;
         }
       }
     }
@@ -282,7 +300,7 @@ string LinuxParser::User(int pid) {
       std::istringstream linestream(line);
       while (linestream >> result >> key) {
         if (key == uid) {
-          break;
+          return result;
         }
       }
     }
@@ -320,7 +338,7 @@ long LinuxParser::UpTime(int pid) {
     while (linestream >> line) {
       statstream.push_back(line);
     }
-    uptime = stol(statstream.at(22)) / sysconf(_SC_CLK_TCK);
+    uptime = stol(statstream.at(kstarttime_)) / sysconf(_SC_CLK_TCK);
   }
   return uptime;
 }

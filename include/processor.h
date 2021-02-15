@@ -9,6 +9,8 @@ class Processor {
  private:
   int cpu_total;
   int no_cpus;
+  float oldidletime{0};
+  float oldcputotal{0};
 };
 
 #endif

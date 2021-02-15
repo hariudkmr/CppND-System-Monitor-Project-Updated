@@ -56,7 +56,12 @@ float Processor::Utilization() {
                guest + guest_nice;
 
     idletotal = idle + iowait;
-    result = (cputotal - idletotal) / cputotal;
+
+    float diffIdle = idletotal - oldidletime;
+    float diffTotal = cputotal - oldcputotal;
+    result = (diffTotal - diffIdle) / diffTotal;
+    oldidletime = idletotal;
+    oldcputotal = cputotal;
   }
   return result;
 }
