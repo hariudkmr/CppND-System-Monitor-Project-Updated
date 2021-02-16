@@ -42,8 +42,8 @@ long int Process::UpTime() { return uptime_; }
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a [[maybe_unused]]) const {
-  return true;
+bool Process::operator<(Process const& a) const {
+  return this->cpu_ > a.cpu_ ? true : false;
 }
 
 void Process::findUserName() { user_ = LinuxParser::User(Pid()); }
@@ -60,7 +60,8 @@ void Process::calculateCpuUtilization() {
       stof(pid_stat_parameters.at(kcutime_)) / sysconf(_SC_CLK_TCK) +
       stof(pid_stat_parameters.at(kcstime_)) / sysconf(_SC_CLK_TCK);
 
-  total_pid_time = cpu_uptime - stof(pid_stat_parameters.at(kstarttime_)) / sysconf(_SC_CLK_TCK);
+  total_pid_time = cpu_uptime - stof(pid_stat_parameters.at(kstarttime_)) /
+                                    sysconf(_SC_CLK_TCK);
   cpu_ = active_pid_time / total_pid_time;
 }
 void Process::calculateRamSize() { ram_ = LinuxParser::Ram(Pid()); }

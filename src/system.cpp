@@ -19,10 +19,6 @@ using std::vector;
 // TODO: Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
-bool compare(Process& pa, Process& pb) {
-  return (pb.CpuUtilization() < pa.CpuUtilization());
-}
-
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() {
   vector<int> List_of_pids = LinuxParser::Pids();
@@ -31,7 +27,7 @@ vector<Process>& System::Processes() {
     Process pid{id};
     sorted_process.push_back(pid);
   }
-  sort(sorted_process.begin(), sorted_process.end(), compare);
+  sort(sorted_process.begin(), sorted_process.end());
 
   processes_ = sorted_process;
   return processes_;
