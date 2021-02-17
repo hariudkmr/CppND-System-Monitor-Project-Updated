@@ -51,7 +51,7 @@ enum MemoryTypes {
   kMemTypes_
 };
 
-enum ePidStat { kutime_ = 14, kstime_, kcutime_, kcstime_, kstarttime_ = 22 };
+enum ePidStat { kutime_ = 14, kstime_, kcutime_, kcstime_, kstarttime_ = 21 };
 
 std::vector<std::string> CpuUtilization();
 long Jiffies();

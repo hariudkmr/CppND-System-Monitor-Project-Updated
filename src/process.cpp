@@ -38,9 +38,9 @@ long int Process::UpTime() { return LinuxParser::UpTime(Pid()); }
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a) const { return this->cpu_ > a.cpu_; }
+bool Process::operator<(Process const& a) const { return this->cpu_ < a.cpu_; }
 
 void Process::calculateCpuUtilization(long cputotal) {
-  long pid_timings = LinuxParser::ActiveJiffies(Pid());
+  float pid_timings = static_cast<float>(LinuxParser::ActiveJiffies(Pid()));
   cpu_ = pid_timings / cputotal;
 }
