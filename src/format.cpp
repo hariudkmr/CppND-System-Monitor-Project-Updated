@@ -8,6 +8,13 @@ using std::string;
 #define SECONDS_IN_HOUR 3600
 
 // TODO: Complete this helper function
+string AppendZero(const long number) {
+  if (number < 10)
+    return "0" + std::to_string(number);
+  else
+    return std::to_string(number);
+}
+
 // INPUT: Long int measuring seconds
 // OUTPUT: HH:MM:SS
 // REMOVE: [[maybe_unused]] once you define the function
@@ -20,6 +27,6 @@ string Format::ElapsedTime(long seconds) {
   pminutes = (seconds % SECONDS_IN_HOUR) / SECONDS_IN_MINUTE;
   pseconds = seconds % SECONDS_IN_MINUTE;
 
-  return std::to_string(phours) + ":" + std::to_string(pminutes) + ":" +
-         std::to_string(pseconds);
+  return AppendZero(phours) + ":" + AppendZero(pminutes) + ":" +
+         AppendZero(pseconds);
 }

@@ -4,13 +4,13 @@
 class Processor {
  public:
   float Utilization();  // TODO: See src/processor.cpp
+  long oldidletime{0};
+  long oldcputotal{0};
 
   // TODO: Declare any necessary private members
  private:
   int cpu_total;
   int no_cpus;
-  float oldidletime{0};
-  float oldcputotal{0};
 };
 
 #endif

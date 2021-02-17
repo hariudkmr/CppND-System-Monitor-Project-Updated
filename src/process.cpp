@@ -14,12 +14,8 @@ using std::to_string;
 using std::vector;
 using namespace LinuxParser;
 
-Process::Process(int pid) : pid_(pid) {
-  findUserName();
-  findCommand();
-  calculateCpuUtilization();
-  calculateRamSize();
-  calculateUpTime();
+Process::Process(int pid, long cputotal) : pid_(pid) {
+  calculateCpuUtilization(cputotal);
 }
 
 // TODO: Return this process's ID
@@ -29,40 +25,22 @@ int Process::Pid() { return pid_; }
 float Process::CpuUtilization() { return cpu_; }
 
 // TODO: Return the command that generated this process
-string Process::Command() { return command_; }
+string Process::Command() { return LinuxParser::Command(Pid()); }
 
 // TODO: Return this process's memory utilization
-string Process::Ram() { return ram_; }
+string Process::Ram() { return LinuxParser::Ram(Pid()); }
 
 // TODO: Return the user (name) that generated this process
-string Process::User() { return user_; }
+string Process::User() { return LinuxParser::User(Pid()); }
 
 // TODO: Return the age of this process (in seconds)
-long int Process::UpTime() { return uptime_; }
+long int Process::UpTime() { return LinuxParser::UpTime(Pid()); }
 
 // TODO: Overload the "less than" comparison operator for Process objects
 // REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a) const {
-  return this->cpu_ > a.cpu_ ? true : false;
+bool Process::operator<(Process const& a) const { return this->cpu_ > a.cpu_; }
+
+void Process::calculateCpuUtilization(long cputotal) {
+  long pid_timings = LinuxParser::ActiveJiffies(Pid());
+  cpu_ = pid_timings / cputotal;
 }
-
-void Process::findUserName() { user_ = LinuxParser::User(Pid()); }
-void Process::findCommand() { command_ = LinuxParser::Command(Pid()); }
-
-void Process::calculateCpuUtilization() {
-  vector<string> pid_stat_parameters;
-  long cpu_uptime = LinuxParser::UpTime();
-  pid_stat_parameters = LinuxParser::CpuUtilization(Pid());
-  float total_pid_time, active_pid_time;
-  active_pid_time =
-      stof(pid_stat_parameters.at(kutime_)) / sysconf(_SC_CLK_TCK) +
-      stof(pid_stat_parameters.at(kstime_)) / sysconf(_SC_CLK_TCK) +
-      stof(pid_stat_parameters.at(kcutime_)) / sysconf(_SC_CLK_TCK) +
-      stof(pid_stat_parameters.at(kcstime_)) / sysconf(_SC_CLK_TCK);
-
-  total_pid_time = cpu_uptime - stof(pid_stat_parameters.at(kstarttime_)) /
-                                    sysconf(_SC_CLK_TCK);
-  cpu_ = active_pid_time / total_pid_time;
-}
-void Process::calculateRamSize() { ram_ = LinuxParser::Ram(Pid()); }
-void Process::calculateUpTime() { uptime_ = LinuxParser::UpTime(Pid()); }

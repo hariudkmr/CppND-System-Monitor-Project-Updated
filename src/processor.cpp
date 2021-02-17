@@ -30,38 +30,14 @@ CPU_Percentage = (totald - idled)/totald
 
 // TODO: Return the aggregate CPU utilization
 float Processor::Utilization() {
-  string line;
   float result;
-  float cputotal, idletotal;
-  string cpuname;
-  float user, nice, system, idle, iowait, irq, softirq, steal, guest,
-      guest_nice;
-  std::ifstream filestream(kProcDirectory + kStatFilename);
-  if (filestream.is_open()) {
-    std::getline(filestream, line);
-    std::istringstream linestream(line);
-    linestream >> cpuname;
-    linestream >> user;
-    linestream >> nice;
-    linestream >> system;
-    linestream >> idle;
-    linestream >> iowait;
-    linestream >> irq;
-    linestream >> softirq;
-    linestream >> steal;
-    linestream >> guest;
-    linestream >> guest_nice;
+  long cputotal = LinuxParser::Jiffies();
+  long idletotal = LinuxParser::IdleJiffies();
 
-    cputotal = user + nice + system + idle + iowait + irq + softirq + steal +
-               guest + guest_nice;
-
-    idletotal = idle + iowait;
-
-    float diffIdle = idletotal - oldidletime;
-    float diffTotal = cputotal - oldcputotal;
-    result = (diffTotal - diffIdle) / diffTotal;
-    oldidletime = idletotal;
-    oldcputotal = cputotal;
-  }
+  float diffIdle = idletotal - oldidletime;
+  float diffTotal = cputotal - oldcputotal;
+  result = (diffTotal - diffIdle) / diffTotal;
+  oldidletime = idletotal;
+  oldcputotal = cputotal;
   return result;
 }

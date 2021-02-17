@@ -22,14 +22,12 @@ Processor& System::Cpu() { return cpu_; }
 // TODO: Return a container composed of the system's processes
 vector<Process>& System::Processes() {
   vector<int> List_of_pids = LinuxParser::Pids();
-  vector<Process> sorted_process{};
   for (int id : List_of_pids) {
-    Process pid{id};
-    sorted_process.push_back(pid);
+    Process pid{id, cpu_.oldcputotal};
+    processes_.push_back(pid);
   }
-  sort(sorted_process.begin(), sorted_process.end());
+  sort(processes_.rbegin(), processes_.rend());
 
-  processes_ = sorted_process;
   return processes_;
 }
 
